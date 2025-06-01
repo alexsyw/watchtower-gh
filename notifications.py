@@ -13,6 +13,8 @@ class MattermostNotifier:
         owner, repo = repo_name.split('/')
         
         return {
+            "username": "GitHub Release Watcher",
+            "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
             "attachments": [{
                 "fallback": f"New release {release['tag_name']} in {repo_name}",
                 "color": "#2E7D32",  # Зеленый цвет для новых релизов
