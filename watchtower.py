@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
+
 import os
 import yaml
 from typing import Dict, List
 
-from github import GitHubClient
+from github_client import GitHubClient
 from state import StateManager
 from notifications import MattermostNotifier
 
@@ -33,16 +35,18 @@ class ReleaseWatcher:
             owner, repo = repo_name.split('/')
             stored_releases = self.state.get_stored_releases(repo_name)
             
-            releases = self.github.get_releases(owner, repo)
-            for release in releases:
-                if release['tag_name'] not in stored_releases:
-                    stored_releases[release['tag_name']] = release
-                    
-                    message = self.notifier.format_message(
-                        repo_name,
-                        release
-                    )
-                    self.notifier.send_notification(message)
+            latest_release = self.github.get_latest_release(owner, repo)
+            if not latest_release:
+                continue
+
+            if latest_release['tag_name'] not in stored_releases:
+                stored_releases[latest_release['tag_name']] = latest_release
+                
+                message = self.notifier.format_message(
+                    repo_name,
+                    latest_release
+                )
+                self.notifier.send_notification(message)
             
             self.state.store_releases(repo_name, stored_releases)
 

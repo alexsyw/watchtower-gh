@@ -14,7 +14,7 @@ class StateManager:
 
     def get_stored_releases(self, repo_name: str) -> Dict:
         """
-        Получает сохраненные релизы для репозитория
+        Gets stored releases for the repository
         """
         try:
             response = self.s3.get_object(
@@ -27,7 +27,7 @@ class StateManager:
 
     def store_releases(self, repo_name: str, releases: Dict):
         """
-        Сохраняет релизы для репозитория
+        Stores releases for the repository
         """
         self.s3.put_object(
             Bucket=self.bucket,
